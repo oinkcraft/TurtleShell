@@ -1,5 +1,2 @@
-# How large should the sphere be? (whole numbers only)
-radius: 5
-
 # How long should the shell last? (whole numbers only, in seconds)
 shell-duration: 16

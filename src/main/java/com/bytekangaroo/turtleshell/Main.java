@@ -1,5 +1,8 @@
 package com.bytekangaroo.turtleshell;
 
+import com.bytekangaroo.turtleshell.command.BaseCommand;
+import com.bytekangaroo.turtleshell.listeners.PlayerClickShellListener;
+import com.bytekangaroo.turtleshell.utils.ShellManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -9,8 +12,8 @@ import java.util.logging.Level;
 
 public class Main extends JavaPlugin {
 
-    // PLUGIN DESCRIPTION
-    private String prefix = "§";
+    // Generate a protective shell!
+    private String prefix = "§8[§2Turtle§aShell§8]§7 ";
 
     private static Main main;
 
@@ -26,8 +29,10 @@ public class Main extends JavaPlugin {
         main = this;
 
         // Register events
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerClickShellListener(), this);
 
         // Register commands
+        getCommand("turtleshell").setExecutor(new BaseCommand());
 
         getLogger().log(Level.INFO, "TurtleShell v" + getDescription().getVersion() + " has successfully been enabled!");
     }
