@@ -1,0 +1,18 @@
+name: TurtleShell
+author: ByteKangaroo
+version: 0.1
+api-version: 1.13
+main: com.bytekangaroo.turtleshell.Main
+description: Create a turtleshell around you for safety!
+commands:
+  turtleshell:
+    aliases: shell
+    description: Base shell command
+    usage: /<command>
+permissions:
+  turtleshell.use.item:
+    description: Allow a player to generate a Turtle Shell by using the item
+  turtleshell.use.command:
+    description: Allow a player to generate a Turtle Shell by using the command
+  turtleshell.reload:
+    description: Allow a player to reload the Turtle Shell configuration file

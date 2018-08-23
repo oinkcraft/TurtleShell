@@ -1,0 +1,60 @@
+package com.bytekangaroo.turtleshell;
+
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.logging.Level;
+
+public class Main extends JavaPlugin {
+
+    // PLUGIN DESCRIPTION
+    private String prefix = "§";
+
+    private static Main main;
+
+    @Override
+    public void onEnable() {
+        // Get the plugin manager
+        PluginManager pm = Bukkit.getServer().getPluginManager();
+
+        // Create configuration
+        createConfig();
+
+        // Register the Main instance
+        main = this;
+
+        // Register events
+
+        // Register commands
+
+        getLogger().log(Level.INFO, "TurtleShell v" + getDescription().getVersion() + " has successfully been enabled!");
+    }
+
+    @Override
+    public void onDisable() {
+        getLogger().log(Level.INFO, "TurtleShell v" + getDescription().getVersion() + " has successfully been disabled!");
+    }
+
+    public void createConfig() {
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdirs();
+        }
+        File file = new File(getDataFolder(), "config.yml");
+        if (!file.exists()) {
+            getLogger().log(Level.INFO, "No configuration found for TurtleShell " + getDescription().getVersion());
+            saveDefaultConfig();
+        } else {
+            getLogger().log(Level.INFO, "Configuration found for TurtleShell v" + getDescription().getVersion() + "!");
+        }
+    }
+
+    public static Main getInstance() {
+        return main;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+}
