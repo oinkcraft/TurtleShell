@@ -24,7 +24,6 @@ public class PlayerClickShellListener implements Listener {
 
     ShellManager manager = ShellManager.getInstance();
 
-    // TODO: Permissions...?
     @EventHandler
     public void onShellClick(PlayerInteractEvent event){
         if(!(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) return;

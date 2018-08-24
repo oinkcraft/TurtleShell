@@ -11,7 +11,7 @@ commands:
     usage: /<command>
 permissions:
   turtleshell.use.item:
-    description: Allow a player to generate a Turtle Shell by using the item
+    description: Allow a player to generate a Turtle Shell by using the item (NOT IMPLEMENTED - NOT NEEDED UNTIL REQUESTED)
   turtleshell.use.command:
     description: Allow a player to generate a Turtle Shell by using the command
   turtleshell.reload:

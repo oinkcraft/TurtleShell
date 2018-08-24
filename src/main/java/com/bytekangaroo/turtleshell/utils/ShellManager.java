@@ -2,17 +2,17 @@ package com.bytekangaroo.turtleshell.utils;
 
 
 import com.bytekangaroo.turtleshell.Main;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Mark on 8/23/2018
@@ -149,36 +149,71 @@ public class ShellManager {
     }
 
     // TODO: Change the check for the block being AIR to replacing the object in the HashMap with the material of the block replaced.
-    private void generateBlocks(Player player, HashMap<Player, ArrayList<Location>> limeGlassBlocks, HashMap<Player, ArrayList<Location>> greenGlassBlocks, HashMap<Player, ArrayList<Location>> limeConcreteBlocks, HashMap<Player, ArrayList<Location>> greenConcreteBlocks) {
-        for(Location bl : limeGlassBlocks.get(player)){
-            if(bl.getBlock().getType().equals(Material.AIR)) {
-                bl.getBlock().setType(Material.GREEN_STAINED_GLASS);
-            }
-        }
-        for(Location bl : greenGlassBlocks.get(player)){
-            if(bl.getBlock().getType().equals(Material.AIR)) {
-                bl.getBlock().setType(Material.LIME_STAINED_GLASS);
-            }
-        }
-        for(Location bl : limeConcreteBlocks.get(player)){
-            if(bl.getBlock().getType().equals(Material.AIR)) {
-                bl.getBlock().setType(Material.GREEN_CONCRETE);
+    private void generateBlocks(Player player1, HashMap<Player, ArrayList<Location>> limeGlassBlocks, HashMap<Player, ArrayList<Location>> greenGlassBlocks, HashMap<Player, ArrayList<Location>> limeConcreteBlocks, HashMap<Player, ArrayList<Location>> greenConcreteBlocks) {
+
+        final Player player = player1;
+
+        // Cool effect to make the shell appear slowly
+        BukkitTask task = new BukkitRunnable(){
+            int timerSeconds = 3;
+
+            public void run(){
+                if(timerSeconds == 3){
+
+                    for(Location bl : getInstance().limeGlassBlocks.get(player)){
+                        if(bl.getBlock().getType().equals(Material.AIR)) {
+                            bl.getBlock().setType(Material.GREEN_STAINED_GLASS);
+                        }
+                    }
+
+                }
+
+                if(timerSeconds == 2){
+
+                    for(Location bl : getInstance().greenGlassBlocks.get(player)){
+                        if(bl.getBlock().getType().equals(Material.AIR)) {
+                            bl.getBlock().setType(Material.LIME_STAINED_GLASS);
+                        }
+                    }
+
+                }
+                if(timerSeconds == 1){
+
+                    for(Location bl : getInstance().limeConcreteBlocks.get(player)){
+                        if(bl.getBlock().getType().equals(Material.AIR)) {
+                            bl.getBlock().setType(Material.GREEN_CONCRETE);
+                        }
+
+                    }
+
+                }
+                if(timerSeconds == 0){
+
+                    for(Location bl : getInstance().greenConcreteBlocks.get(player)){
+                        if(bl.getBlock().getType().equals(Material.AIR)) {
+                            bl.getBlock().setType(Material.LIME_CONCRETE);
+                        }
+                    }
+
+                    cancel();
+                }
+                timerSeconds--;
             }
 
-        }
-        for(Location bl : greenConcreteBlocks.get(player)){
-            if(bl.getBlock().getType().equals(Material.AIR)) {
-                bl.getBlock().setType(Material.LIME_CONCRETE);
-            }
-        }
+        }.runTaskTimer(Main.getInstance(), 0L, 1L);
     }
 
     // Create the shell! (Yes, it's hardcoded in)
-    public void generateSmallShell(Player player){
-
+    public void generateSmallShell(Player player1){
+        // Checking one map checks them all... prevent the shell if the player already made one.
+        final Player player = player1;
+        if(limeGlassBlocks.containsKey(player)){
+            player.sendMessage(prefix + ChatColor.RED + "Please wait for your previous shell to expire!");
+            return;
+        }
         // Define variables
         Location location = player.getLocation();
-        World world = location.getWorld();
+        final World world = location.getWorld();
         final int ORIGIN_X = location.getBlockX();
         final int ORIGIN_Y = location.getBlockY();
         final int ORIGIN_Z = location.getBlockZ();
@@ -193,7 +228,6 @@ public class ShellManager {
         createFirstLayer(player, world, ORIGIN_X, ORIGIN_Y, ORIGIN_Z);
         createSecondLayer(player, world, ORIGIN_X, ORIGIN_Y, ORIGIN_Z);
         createThirdLayer(player, world, ORIGIN_X, ORIGIN_Y, ORIGIN_Z);
-
 
         // Generate blocks
         generateBlocks(player, greenGlassBlocks, limeGlassBlocks, greenConcreteBlocks, limeConcreteBlocks);
@@ -216,28 +250,28 @@ public class ShellManager {
         greenGlassBlocks.remove(player);
         limeConcreteBlocks.remove(player);
         greenConcreteBlocks.remove(player);
-        player.sendMessage(prefix + "Your Turtle Shell has been cleared!");
+        player.sendMessage(prefix + "Your turtle shell has been cleared!");
     }
 
     // TO-DO: Just reset it to the material in the HashMap, if you followed the TO-DO ABOVE
     private void clearBlocks(Player player, HashMap<Player, ArrayList<Location>> limeGlassBlocks, HashMap<Player, ArrayList<Location>> greenGlassBlocks, HashMap<Player, ArrayList<Location>> limeConcreteBlocks, HashMap<Player, ArrayList<Location>> greenConcreteBlocks) {
-        for(Location bl : limeGlassBlocks.get(player)){
+        for(Location bl : getInstance().limeGlassBlocks.get(player)){
             if(bl.getBlock().getType().equals(Material.GREEN_STAINED_GLASS)) {
                 bl.getBlock().setType(Material.AIR);
             }
         }
-        for(Location bl : greenGlassBlocks.get(player)){
+        for(Location bl : getInstance().greenGlassBlocks.get(player)){
             if(bl.getBlock().getType().equals(Material.LIME_STAINED_GLASS)) {
                 bl.getBlock().setType(Material.AIR);
             }
         }
-        for(Location bl : limeConcreteBlocks.get(player)){
+        for(Location bl : getInstance().limeConcreteBlocks.get(player)){
             if(bl.getBlock().getType().equals(Material.GREEN_CONCRETE)) {
                 bl.getBlock().setType(Material.AIR);
             }
 
         }
-        for(Location bl : greenConcreteBlocks.get(player)){
+        for(Location bl : getInstance().greenConcreteBlocks.get(player)){
             if(bl.getBlock().getType().equals(Material.LIME_CONCRETE)) {
                 bl.getBlock().setType(Material.AIR);
             }
@@ -249,11 +283,25 @@ public class ShellManager {
         ItemStack specificShell = new ItemStack(Material.TURTLE_HELMET);
         specificShell.setAmount(1);
         ItemMeta specificShellMeta = specificShell.getItemMeta();
-        specificShellMeta.setDisplayName("" + ChatColor.GREEN + ChatColor.BOLD + "TurtleShell Generator");
+        specificShellMeta.setDisplayName("" + ChatColor.DARK_GREEN + ChatColor.BOLD + "TurtleShell Generator");
+
         specificShellMeta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 16, true);
+        specificShellMeta.addEnchant(Enchantment.WATER_WORKER, 16, true);
+
+        ArrayList<String> shellLore = new ArrayList<String>();
+        shellLore.add("An ancient item left behind by an ancient turtle.");
+        shellLore.add("Legend states it offers protectio against what lies beyond...");
+        shellLore.add("" + ChatColor.GREEN + ChatColor.BOLD + "RIGHT CLICK TO ACTIVATE");
+        specificShellMeta.setLore(shellLore);
+
         specificShell.setItemMeta(specificShellMeta);
 
         return specificShell;
+    }
+
+    // Reset configuration properties
+    public void resetConfigProperties(){
+        this.seconds = 20 * Main.getInstance().getConfig().getInt("shell-duration");
     }
 
 }
